@@ -45,3 +45,4 @@ plans/
 # Design source: the 21 MB of demo PNGs stay local; the fixture gets
 # downscaled copies (plan D6)
 design/demo-img/
+.claude/.work-issue-active
