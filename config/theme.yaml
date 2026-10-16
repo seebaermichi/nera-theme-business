@@ -1,0 +1,26 @@
+# nera-theme-business/config/theme.yaml — defaults (token set "Crust")
+label: Business
+tokens:
+    color:
+        bg: '#fbf2e3'
+        surface: '#f1e0c3'
+        text: '#3b2314'
+        muted: '#6e4b2e'
+        accent: '#a1400f'
+        accent_text: '#ffffff'
+        border: '#dcc6a3'
+        focus: '#1c5f74'
+    font:
+        body: "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif"
+        heading: "'Fraunces', 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif"
+        mono: "ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace"
+    size:
+        base: '1.0625rem'
+        measure: '38rem'
+        width: '72rem'
+        radius: '0.5rem'
+        space: '1.5rem'
+extra_css: []
+footer_links: []
+footer:
+    show_hours: true

@@ -1,0 +1,10 @@
+//- The site footer (§S2.2): the footer-extra seam, the legal links of
+//- `footer_links`, and the copyright line.
+footer.site-footer
+    .site-footer__inner
+        include footer-extra.pug
+        if themeBusiness.footerLinks(pageLang({ meta })).length
+            nav.site-footer__legal(aria-label=t('Legal'))
+                each link in themeBusiness.footerLinks(pageLang({ meta }))
+                    a(href=link.href)= t(link.label)
+        p.site-footer__copy © #{new Date().getFullYear()} #{app.name}

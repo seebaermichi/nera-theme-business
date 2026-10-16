@@ -1,0 +1,7 @@
+//- The design tokens of config/theme.yaml as --theme-* custom properties
+//- (§S2.5), in one inline <style>. The rule is built by
+//- themeBusiness.tokenRule() (helpers.pug), which drops every value with `<`,
+//- `>`, `{`, `}` or `;` and every name not made of letters, digits, `-` and
+//- `_`, so nothing in the YAML can break out of the rule.
+if themeBusiness.tokenRule()
+    style!= themeBusiness.tokenRule()

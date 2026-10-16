@@ -1,0 +1,8 @@
+//- The site header (§S2.2): brand, main navigation (seam nav-main.pug) and
+//- the language switch.
+header.site-header
+    .site-header__inner
+        a.site-header__brand(href=homeHref(pageLang({ meta })))= app.name
+        nav.site-header__nav(aria-label=t('Main navigation'))
+            include nav-main.pug
+        include lang-switch.pug

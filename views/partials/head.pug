@@ -1,0 +1,13 @@
+//- The <head> content (§S2.2). Ends with the head-extra seam.
+meta(charset='utf-8')
+meta(name='viewport' content='width=device-width, initial-scale=1')
+title= [...new Set([meta.title, app.name].filter(Boolean))].join(' – ')
+if meta.description
+    meta(name='description' content=meta.description)
+if meta.robots || app.robots
+    meta(name='robots' content=meta.robots || app.robots)
+link(rel='stylesheet' href='/css/theme.css')
+include tokens.pug
+each href in themeBusiness.extraCss()
+    link(rel='stylesheet' href=href)
+include head-extra.pug

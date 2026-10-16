@@ -1,0 +1,19 @@
+//- The shell every page type extends (ROADMAP-themes §S2.2, §S2.3). Blocks:
+//- head, header, main, footer, scripts.
+include ../partials/helpers.pug
+doctype html
+html(lang=meta.lang || app.lang || 'en')
+    head
+        include ../partials/head.pug
+        block head
+    body
+        a.skip-link(href='#main')= t('Skip to content')
+        block header
+            include ../partials/header.pug
+        main#main.site-main
+            block main
+                != content
+        block footer
+            include ../partials/footer.pug
+        block scripts
+            include ../partials/scripts.pug

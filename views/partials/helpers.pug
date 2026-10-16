@@ -1,0 +1,128 @@
+//- The shared functions every view calls (ROADMAP-themes §S2.2). Included by
+//- layouts/layout.pug before anything that uses them; a site that overrides
+//- the layout includes this file too.
+//-
+//- Pug compiles a page and everything it includes into one function, so a
+//- top-level name here would clash with a `const` of the same name in any
+//- included template (plugin-tags' tag-overview declares `lang`, for one).
+//- The theme therefore declares only the six helpers of §S2.2 and one object,
+//- `themeBusiness`, which holds the rest and is not contract.
+-
+    // The language a page is in: its own `lang`, else the site's.
+    function pageLang(page) {
+        return (page && page.meta && page.meta.lang) || app.lang
+    }
+
+    // Whether a page is in the current page's language.
+    function sameLang(page) {
+        return pageLang(page) === pageLang({ meta })
+    }
+
+    // The home page of a language (§S2.8, rule 2), falling back to `/`.
+    function homeHref(lang) {
+        const home = themeBusiness.homePage(lang)
+        return home ? home.meta.href : '/'
+    }
+
+    // Formatted in UTC: a YAML date is midnight UTC, so a build machine in a
+    // time zone west of UTC would otherwise print the day before.
+    function formatDate(value, lang) {
+        const date = themeBusiness.toDate(value)
+        return date
+            ? date.toLocaleDateString(lang, { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })
+            : ''
+    }
+
+    function isoDate(value) {
+        const date = themeBusiness.toDate(value)
+        return date ? date.toISOString().slice(0, 10) : ''
+    }
+
+    // A path, or a `{ <lang>: path }` map resolved for `lang`. Undefined when
+    // the map has no path for that language.
+    function hrefFor(value, lang) {
+        if (typeof value === 'string') return value
+        if (value && typeof value === 'object' && typeof value[lang] === 'string') return value[lang]
+        return undefined
+    }
+
+    const themeBusiness = (() => {
+        const config = (app.theme && app.theme.config) || {}
+        const pages = () => (Array.isArray(pagesData) ? pagesData : []).filter((page) => page && page.meta)
+        const byHref = (a, b) => String(a.meta.href).localeCompare(String(b.meta.href))
+
+        // Frontmatter dates arrive as Date objects (YAML timestamps), a
+        // file's birth time, or a string. Null when the value is not a date.
+        const toDate = (value) => {
+            if (value === undefined || value === null || value === '') return null
+            const date = value instanceof Date ? value : new Date(value)
+            return Number.isNaN(date.getTime()) ? null : date
+        }
+
+        // A rendered `index.html` in that language with the shortest
+        // `dirname` (ties by href), or null.
+        const homePage = (lang) =>
+            pages()
+                .filter((page) => page.meta.layout && page.meta.filename === 'index.html' && pageLang(page) === lang)
+                .sort((a, b) => String(a.meta.dirname).length - String(b.meta.dirname).length || byHref(a, b))[0] || null
+
+        // The `:root{…}` rule of the design tokens (§S2.5), or '' when no
+        // token survives. A value is kept only if it is a string or number
+        // without `<`, `>`, `{`, `}` or `;`, a group or token name only if it
+        // is made of letters, digits, `-` and `_`.
+        const tokenRule = () => {
+            const tokens = config.tokens && typeof config.tokens === 'object' ? config.tokens : {}
+            const safe = (v) => ['string', 'number'].includes(typeof v) && !/[<>{};]/.test(String(v))
+            const safeName = (n) => /^[A-Za-z0-9_-]+$/.test(n)
+            const decls = []
+            for (const [group, values] of Object.entries(tokens)) {
+                if (!values || typeof values !== 'object' || !safeName(group)) continue
+                for (const [name, value] of Object.entries(values)) {
+                    if (safeName(name) && safe(value)) decls.push(`--theme-${group}-${name.replace(/_/g, '-')}:${value};`)
+                }
+            }
+            return decls.length ? `:root{${decls.join('')}}` : ''
+        }
+
+        // `extra_css` entries that are root-absolute paths: one leading `/`,
+        // not `//` or `/\` (a browser reads both as another host), and no tab
+        // or line break anywhere (the URL parser drops them, so `/\t/host`
+        // would become `//host`).
+        const extraCss = () =>
+            (Array.isArray(config.extra_css) ? config.extra_css : [])
+                .filter((entry) => typeof entry === 'string' && /^\/(?![/\\])[^\t\n\r]*$/.test(entry))
+
+        // `footer_links` resolved for a language; an entry without a label or
+        // without a path for that language is left out.
+        const footerLinks = (lang) =>
+            (Array.isArray(config.footer_links) ? config.footer_links : [])
+                .filter((entry) => entry && typeof entry.label === 'string' && hrefFor(entry.href, lang))
+                .map((entry) => ({ label: entry.label, href: hrefFor(entry.href, lang) }))
+
+        // The language switch (§S2.8): every language of `app.translations`,
+        // the page's own as `current`, each other one linked to the page with
+        // the same `slug` in that language, else to that language's home; a
+        // language with neither is left out. Empty, so the switch is not
+        // rendered, when there are fewer than two translations or no other
+        // language is left.
+        const languageSwitch = (lang) => {
+            const translations = app.translations || {}
+            const slug = meta.slug
+            const links = Object.keys(translations)
+                .map((code) => {
+                    const name = (translations[code] && translations[code].language_name) || code.toUpperCase()
+                    if (code === lang) return { code, name, current: true }
+                    const twin = slug === undefined || slug === null
+                        ? null
+                        : pages()
+                            .filter((page) => page.meta.layout && page.meta.slug === slug && pageLang(page) === code)
+                            .sort(byHref)[0]
+                    const target = twin || homePage(code)
+                    return target ? { code, name, href: target.meta.href } : null
+                })
+                .filter(Boolean)
+            return Object.keys(translations).length >= 2 && links.some((link) => !link.current) ? links : []
+        }
+
+        return { toDate, homePage, tokenRule, extraCss, footerLinks, languageSwitch }
+    })()

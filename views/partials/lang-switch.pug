@@ -1,0 +1,13 @@
+//- The language switch (§S2.8), shown when app.translations has two or more
+//- languages and at least one other language has a page to link (a site with
+//- a copied, untranslated entry gets no one-item switch). Each language is
+//- named by its own `language_name` translation.
+if themeBusiness.languageSwitch(pageLang({ meta })).length
+    nav.lang-switch(aria-label=t('Language'))
+        ul.lang-switch__list
+            each link in themeBusiness.languageSwitch(pageLang({ meta }))
+                li.lang-switch__item
+                    if link.current
+                        span.lang-switch__link(aria-current='true' lang=link.code)= link.name
+                    else
+                        a.lang-switch__link(href=link.href hreflang=link.code lang=link.code)= link.name
