@@ -1,0 +1,7 @@
+# The home hero is rendered eagerly through the hero-media seam, so the first
+# Markdown image does not compete with it (plugin-images README).
+eager_first: false
+widths: [480]
+og: false
+# The hero and the card images come from the `image` frontmatter key.
+frontmatter_keys: [image]

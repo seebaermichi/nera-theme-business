@@ -1,0 +1,75 @@
+# The acceptance site of @nera-static/theme-business (ROADMAP-themes §S7): the
+# business starter's page set plus a portfolio section, in English and German,
+# the theme used by local path.
+lang: en
+name: Brot & Zeit
+robots: index,follow
+theme: ../..
+
+# The business's facts (§S3.1), read by the address, the opening hours and
+# the footer. `email` is left out, as the starter does: the contact form
+# takes its place.
+business:
+    street: Kollwitzstraße 42
+    postal_code: '10405'
+    city: Berlin
+    country: Deutschland
+    phone: '+49 30 123 456 78'
+    hours:
+        - days: Tue–Fri
+          opens: '07:00'
+          closes: '18:00'
+        - days: Sat
+          opens: '07:30'
+          closes: '15:00'
+        - days: Sun
+          opens: '08:00'
+          closes: '13:00'
+        - days: Mon
+          closed: true
+    hours_note: Closed on public holidays.
+
+translations:
+    en:
+        language_name: English
+        # plugin-contact-form's intro and consent: keys rather than text,
+        # because the consent links the privacy page of each language
+        contact_intro: We reply within one working day. For same-day orders please call.
+        contact_consent: Sending opens your own email program. See our <a href="/privacy.html">privacy notice</a>.
+    de:
+        language_name: Deutsch
+        # theme keys (§S2.6, §S3.3)
+        Skip to content: Zum Inhalt springen
+        Main navigation: Hauptnavigation
+        Language: Sprache
+        Legal: Rechtliches
+        Opening hours: Öffnungszeiten
+        Closed: Geschlossen
+        Contact details: Kontakt
+        Phone: Telefon
+        Email: E-Mail
+        # footer_links labels (config/theme.yaml)
+        Imprint: Impressum
+        Privacy: Datenschutz
+        # opening hours: days and note of app.business.hours
+        Tue–Fri: Di–Fr
+        Sat: Sa
+        Sun: So
+        Mon: Mo
+        Closed on public holidays.: An Feiertagen geschlossen.
+        # plugin-contact-form (config/contact-form.yaml)
+        Message from the website: Nachricht über die Website
+        Send message: Nachricht senden
+        Please fill in all required fields.: Bitte füllen Sie alle Pflichtfelder aus.
+        Please enter a valid email address.: Bitte geben Sie eine gültige E-Mail-Adresse an.
+        'Yes': Ja
+        'No': Nein
+        Your name: Ihr Name
+        Your email: Ihre E-Mail-Adresse
+        Topic: Thema
+        Order: Bestellung
+        Baking course: Backkurs
+        Something else: Etwas anderes
+        Message: Nachricht
+        contact_intro: Wir antworten innerhalb eines Werktags. Für Bestellungen am selben Tag rufen Sie bitte an.
+        contact_consent: Beim Senden öffnet sich Ihr eigenes E-Mail-Programm. Mehr dazu in der <a href="/de/datenschutz.html">Datenschutzerklärung</a>.

@@ -1,0 +1,24 @@
+# Default class names (nav, nav__link, …) kept: the theme styles them (§S3.5).
+elements:
+    main_en:
+        - href: /index.html
+          name: Home
+        - href: /about.html
+          name: About
+        - href: /services.html
+          name: Services
+        - href: /projects/index.html
+          name: Projects
+        - href: /contact.html
+          name: Contact
+    main_de:
+        - href: /de/index.html
+          name: Start
+        - href: /de/ueber-uns.html
+          name: Über uns
+        - href: /de/leistungen.html
+          name: Leistungen
+        - href: /de/projekte/index.html
+          name: Projekte
+        - href: /de/kontakt.html
+          name: Kontakt

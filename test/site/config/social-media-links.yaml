@@ -1,0 +1,6 @@
+aria_label: Social media
+# No target="_blank" (nera check: a11y-target-blank).
+open_in_new_tab: false
+social_media_links:
+    - name: Mastodon
+      href: https://mastodon.social/@nera

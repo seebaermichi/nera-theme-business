@@ -1,0 +1,33 @@
+# Every text is a t() key (translated in config/app.yaml), so one field list
+# serves both languages. The form opens the visitor's mail client through the
+# client script the site publishes to theme/assets/js/contact-form.js.
+recipient: hallo@example.org
+subject: Message from the website
+submit_label: Send message
+error_required: Please fill in all required fields.
+error_email: Please enter a valid email address.
+checkbox_checked_label: 'Yes'
+checkbox_unchecked_label: 'No'
+intro_text: contact_intro
+consent_text: contact_consent
+fields:
+    - name: name
+      label: Your name
+      type: text
+      required: true
+    - name: email
+      label: Your email
+      type: email
+      required: true
+    - name: topic
+      label: Topic
+      type: select
+      required: true
+      options:
+          - { value: order, label: Order }
+          - { value: course, label: Baking course }
+          - { value: other, label: Something else }
+    - name: message
+      label: Message
+      type: textarea
+      required: true

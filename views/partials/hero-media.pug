@@ -1,5 +1,8 @@
 //- Seam (§S3.2): div.hero__media of the home hero, hidden by the CSS while
 //- empty. In scope: meta. Empty in the theme. A site with
-//- @nera-static/plugin-images overrides it with:
+//- @nera-static/plugin-images sets `image` (and `image_alt`) in the home
+//- page's frontmatter and overrides it with:
 //-     include /vendor/plugin-images/picture
-//-     +picture(meta.images && meta.images.hero, { alt: meta.hero.image_alt, class: 'hero__image', loading: 'eager' })
+//-     +picture(meta.images && meta.images.image, { alt: meta.image_alt, class: 'hero__image', loading: 'eager' })
+//- (`meta.hero` holds the hero's texts, so plugin-images cannot read an image
+//- path from it.)

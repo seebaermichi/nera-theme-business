@@ -1,0 +1,31 @@
+# Every rule of `nera check` on, the opt-in ones included (ROADMAP-themes §S7),
+# and promoted to error so a finding fails the check.
+rules:
+    a11y-html-lang: error
+    a11y-title: error
+    a11y-h1: error
+    a11y-heading-skip: error
+    a11y-img-alt: error
+    a11y-form-label: error
+    a11y-link-name: error
+    a11y-main: error
+    a11y-skip-link: error
+    a11y-nav-name: error
+    a11y-duplicate-id: error
+    a11y-viewport-zoom: error
+    a11y-link-lang: error
+    a11y-target-blank: error
+    a11y-reduced-motion: error
+    privacy-third-party: error
+    privacy-insecure: error
+    privacy-storage: error
+    legal-imprint-link: error
+    legal-privacy-link: error
+    legal-outdated-law: error
+legal:
+    imprint:
+        en: /imprint.html
+        de: /de/impressum.html
+    privacy:
+        en: /privacy.html
+        de: /de/datenschutz.html

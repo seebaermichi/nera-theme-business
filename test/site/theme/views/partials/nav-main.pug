@@ -1,0 +1,5 @@
+//- Seam override: plugin-navigation's list form, one menu per language
+//- (config/navigation.yaml: elements.main_en, elements.main_de). The menu of a
+//- language other than app.lang has its pages under /<lang>, its rootPath.
+include /vendor/plugin-navigation/partials/link-list-navigation
++linkListNav(((app.nav || {})[`main_${meta.lang || app.lang}`] || { elements: [] }).elements, '', (meta.lang || app.lang) === app.lang ? '/' : `/${meta.lang}`)
