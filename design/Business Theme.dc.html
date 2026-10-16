@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<style>
+body{margin:0;background:#E8DCC6;color:#3B2314;font-family:system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
+a{color:#A1400F}a:hover{color:#6B2A0A}
+</style>
+</helmet>
+<div style="padding:48px;display:flex;flex-direction:column;gap:64px;min-width:max-content">
+
+<div style="max-width:880px;display:flex;flex-direction:column;gap:12px">
+  <div style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;color:#6B6259">Nera theme · Business · demo: Brot &amp; Zeit, Berlin</div>
+  <h1 style="margin:0;font-family:'Iowan Old Style','Palatino Linotype',Palatino,Charter,Georgia,serif;font-size:44px;line-height:1.1;letter-spacing:-.01em">Crust, flour and a hot oven.</h1>
+  <p style="margin:0;font-size:18px;line-height:1.5;max-width:40rem;color:#2B2521">Cream page, wheat cards, and two dark "oven" bands — hero and footer are set in the text colour with the page colour as ink, so they stay AA under any owner's tokens. A big serif voice (Fraunces, self-hosted; shown here in its Palatino/Georgia fallback), a burnt-crust accent as a thick rule under the header and section titles, a slightly tilted hero photo. Every mockup is the real CSS rendered live — placeholder photos are generated stand-ins; drop in real ones and the layout stays.</p>
+</div>
+
+<sc-for list="{{ themes }}" as="t" hint-placeholder-count="2">
+<section id="{{ t.id }}" style="display:flex;flex-direction:column;gap:28px">
+  <div style="display:flex;align-items:baseline;gap:16px;flex-wrap:wrap">
+    <a href="#{{ t.id }}" style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;background:#2B2521;color:#FBF8F3;padding:4px 10px;border-radius:4px;text-decoration:none">{{ t.id }}</a>
+    <h2 style="margin:0;font-family:'Iowan Old Style','Palatino Linotype',Palatino,Charter,Georgia,serif;font-size:30px;letter-spacing:-.01em">{{ t.name }}</h2>
+    <span style="color:#6B6259;font-size:15px">{{ t.note }}</span>
+  </div>
+  <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start">
+    <div style="display:flex;gap:4px">
+      <sc-for list="{{ t.swatches }}" as="s" hint-placeholder-count="8">
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:72px">
+          <div style="width:72px;height:44px;border-radius:4px;border:1px solid #D4CBBD;background:{{ s.hex }}"></div>
+          <span style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;color:#6B6259">{{ s.name }}</span>
+          <span style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;color:#2B2521">{{ s.hex }}</span>
+        </div>
+      </sc-for>
+    </div>
+    <pre style="margin:0;padding:16px 20px;background:#FBF8F3;border:1px solid #D4CBBD;border-radius:6px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;line-height:1.55;color:#2B2521;white-space:pre">{{ t.yaml }}</pre>
+    <div style="padding:16px 20px;background:#FBF8F3;border:1px solid #D4CBBD;border-radius:6px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;line-height:1.55;display:grid;grid-template-columns:auto auto;gap:2px 20px;align-content:start">
+      <span style="color:#6B6259;grid-column:1/-1;margin-bottom:4px">WCAG contrast (all ≥ 4.5)</span>
+      <sc-for list="{{ t.ratios }}" as="r" hint-placeholder-count="8">
+        <span style="color:#6B6259">{{ r.pair }}</span><span style="text-align:right">{{ r.v }}</span>
+      </sc-for>
+    </div>
+  </div>
+  <sc-for list="{{ t.frames }}" as="p" hint-placeholder-count="6">
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;gap:12px;align-items:baseline"><span style="font-weight:600;font-size:15px">{{ p.label }}</span><span style="color:#6B6259;font-size:13px">{{ p.file }}</span></div>
+      <div style="display:flex;gap:24px;align-items:flex-start">
+        <div style="width:1280px;height:{{ p.h }}px;overflow:hidden;border:1px solid #D4CBBD;border-radius:6px;background:#fff;flex:none">
+          <iframe src="{{ p.src }}" title="Desktop mockup" style="width:1280px;height:{{ p.h }}px;border:0;display:block"></iframe>
+        </div>
+        <div style="width:390px;height:{{ p.h }}px;overflow:hidden;border:1px solid #D4CBBD;border-radius:6px;background:#fff;flex:none">
+          <iframe src="{{ p.src }}" title="Phone mockup" style="width:390px;height:{{ p.h }}px;border:0;display:block"></iframe>
+        </div>
+      </div>
+    </div>
+  </sc-for>
+</section>
+</sc-for>
+
+<div style="max-width:880px;display:flex;flex-direction:column;gap:10px;font-size:15px;line-height:1.55;color:#2B2521">
+  <h2 style="margin:0;font-family:'Iowan Old Style','Palatino Linotype',Palatino,Charter,Georgia,serif;font-size:24px">Notes</h2>
+  <p style="margin:0">Files: <a href="theme.css">theme.css</a> (tokens only, no hard-coded colours) · <a href="tokens.yaml">tokens.yaml</a> · <a href="tokens-variant.yaml">tokens-variant.yaml</a> · live pages in <a href="demo/index.html">demo/</a> and <a href="demo-variant/index.html">demo-variant/</a>.</p>
+  <p style="margin:0">Heading font: the default names <em>Fraunces</em> (OFL, one self-hosted file) — what you see is the system fallback (Iowan Old Style / Palatino / Georgia), so the design is proven without it. The dark bands use only <code>color.text</code> and <code>color.bg</code> swapped, so their contrast is the already-checked text/bg pair. Relationship to "Blog": same calm measure and hairline logic, but the Business theme is warmer, louder in type and carries two dark bands.</p>
+  <p style="margin:0">Phone frames are 390px wide and scrollable; the desktop frames are 1280px. Frames are cropped at a fixed height so the canvas stays scannable.</p>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const ratios = (o) => Object.entries(o).map(([pair, v]) => ({ pair, v }));
+    const pages = [
+      { label: 'Home', file: 'index.html', h: 1700 },
+      { label: 'Default page', file: 'about.html', h: 1500 },
+      { label: 'Contact', file: 'contact.html', h: 1300 },
+      { label: 'List', file: 'team.html', h: 1250 },
+      { label: 'Gallery', file: 'bakehouse.html', h: 1150 },
+      { label: 'Imprint / privacy', file: 'imprint.html', h: 1500 },
+    ];
+    const frames = (dir) => pages.map((p) => ({ ...p, src: dir + '/' + p.file }));
+    const sw = (o) => Object.entries(o).map(([name, hex]) => ({ name, hex }));
+    return {
+      themes: [
+        {
+          id: '1a', name: 'Default — Crust', dir: 'demo', frames: frames('demo'),
+          note: 'system sans body · Fraunces headings (OFL, self-hosted; falls back to Palatino/Georgia)',
+          swatches: sw({ bg: '#FBF2E3', surface: '#F1E0C3', text: '#3B2314', muted: '#6E4B2E', accent: '#A1400F', accent_text: '#FFFFFF', border: '#DCC6A3', focus: '#1C5F74' }),
+          yaml: `tokens:
+    color: { bg: '#FBF2E3', surface: '#F1E0C3', text: '#3B2314', muted: '#6E4B2E',
+             accent: '#A1400F', accent_text: '#FFFFFF', border: '#DCC6A3', focus: '#1C5F74' }
+    font:  { body: "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif",
+             heading: "'Fraunces', 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif",
+             mono: "ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" }
+    size:  { base: '1.0625rem', measure: '38rem', width: '72rem', radius: '0.5rem', space: '1.5rem' }`,
+          ratios: ratios({ 'text / bg': '13.17', 'text / surface': '11.27', 'muted / bg': '6.98', 'muted / surface': '5.98', 'accent / bg': '5.81', 'accent / surface': '4.97', 'accent_text / accent': '6.45', 'focus / bg': '6.44' }),
+        },
+        {
+          id: '1b', name: 'Variant — Fig', dir: 'demo-variant', frames: frames('demo-variant'),
+          note: 'tokens only: plum accent, serif body (Charter/Georgia), sans headings, square corners',
+          swatches: sw({ bg: '#F7F3EE', surface: '#EADFD6', text: '#2E1A2B', muted: '#6A4E63', accent: '#7A2E5C', accent_text: '#FFFFFF', border: '#D3C3BC', focus: '#0E6B5A' }),
+          yaml: `tokens:
+    color: { bg: '#F7F3EE', surface: '#EADFD6', text: '#2E1A2B', muted: '#6A4E63',
+             accent: '#7A2E5C', accent_text: '#FFFFFF', border: '#D3C3BC', focus: '#0E6B5A' }
+    font:  { body: "Charter, 'Bitstream Charter', 'Iowan Old Style', Georgia, serif",
+             heading: "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif",
+             mono: "ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" }
+    size:  { base: '1.0625rem', measure: '36rem', width: '68rem', radius: '0rem', space: '1.5rem' }`,
+          ratios: ratios({ 'text / bg': '14.64', 'text / surface': '12.34', 'muted / bg': '6.59', 'muted / surface': '5.56', 'accent / bg': '8.01', 'accent / surface': '6.75', 'accent_text / accent': '8.85', 'focus / bg': '5.81' }),
+        },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

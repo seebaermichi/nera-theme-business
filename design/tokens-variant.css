@@ -1,0 +1,7 @@
+/* generated from tokens-variant.yaml */
+:root{
+  --theme-color-bg:#F7F3EE;--theme-color-surface:#EADFD6;--theme-color-text:#2E1A2B;--theme-color-muted:#6A4E63;
+  --theme-color-accent:#7A2E5C;--theme-color-accent-text:#FFFFFF;--theme-color-border:#D3C3BC;--theme-color-focus:#0E6B5A;
+  --theme-font-body:Charter, "Bitstream Charter", "Iowan Old Style", Georgia, serif;--theme-font-heading:system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;--theme-font-mono:ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --theme-size-base:1.0625rem;--theme-size-measure:36rem;--theme-size-width:68rem;--theme-size-radius:0rem;--theme-size-space:1.5rem;
+}

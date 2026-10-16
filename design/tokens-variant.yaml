@@ -1,0 +1,5 @@
+# Variant "Fig" — plum accent, serif body, sans headings, square corners
+tokens:
+    color: { bg: '#F7F3EE', surface: '#EADFD6', text: '#2E1A2B', muted: '#6A4E63', accent: '#7A2E5C', accent_text: '#FFFFFF', border: '#D3C3BC', focus: '#0E6B5A' }
+    font: { body: "Charter, 'Bitstream Charter', 'Iowan Old Style', Georgia, serif", heading: "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif", mono: "ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" }
+    size: { base: '1.0625rem', measure: '36rem', width: '68rem', radius: '0rem', space: '1.5rem' }
