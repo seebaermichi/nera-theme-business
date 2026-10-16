@@ -1,14 +1,27 @@
-// §S7 "Contract present", shared part (§S2): every view, partial, seam and
-// block of §S2.2–§S2.4, every token and key of §S2.5 and the shell classes in
-// views/. The shell is also rendered with Pug, so the token filter, the
-// extra_css filter, the footer links and the language switch are checked on
-// their output.
+// §S7 "Contract present": every view, partial, seam and block of §S2.2–§S2.4
+// and §S3.1–§S3.2, every token and key of §S2.5, every t() key of §S2.6/§S3.3
+// and every class of §S3.6 in views/. The shell and the page types are also
+// rendered with Pug, so the token filter, the extra_css filter, the footer,
+// the language switch and the business markup are checked on their output.
 import fs from 'fs'
 import path from 'path'
 import { createRequire } from 'module'
 import { fileURLToPath } from 'url'
 import { describe, expect, it } from 'vitest'
-import { BLOCKS, HELPERS, SEAMS, SHELL_CLASSES, T_KEYS, THEME_KEYS, TOKENS, VIEWS } from './helpers/contract.js'
+import {
+    BLOCKS,
+    BUSINESS_CLASSES,
+    BUSINESS_PARTIALS,
+    BUSINESS_SEAMS,
+    HELPERS,
+    PAGE_TYPES,
+    SEAMS,
+    SHELL_CLASSES,
+    T_KEYS,
+    THEME_KEYS,
+    TOKENS,
+    VIEWS,
+} from './helpers/contract.js'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const VIEWS_DIR = path.join(ROOT, 'views')
@@ -29,13 +42,21 @@ const listPug = (dir) =>
 const allViews = () => listPug(VIEWS_DIR).map((file) => fs.readFileSync(file, 'utf-8')).join('\n')
 const defaults = () => YAML.parse(fs.readFileSync(path.join(ROOT, 'config', 'theme.yaml'), 'utf-8'))
 
-// Render the layout as core does: `app.theme.config` is the merged theme
-// config, `t` looks up the page's language and falls back to the key.
-function renderShell({ config = defaults(), meta = {}, pagesData = [], translations = {}, content = '<p>Body</p>' } = {}) {
-    const app = { name: 'Brot & Zeit', lang: 'en', translations, theme: { config } }
+// Render a view as core does: `app.theme.config` is the merged theme config,
+// `t` looks up the page's language and falls back to the key.
+function renderShell({
+    view = 'layouts/layout.pug',
+    config = defaults(),
+    business,
+    meta = {},
+    pagesData = [],
+    translations = {},
+    content = '<p>Body</p>',
+} = {}) {
+    const app = { name: 'Brot & Zeit', lang: 'en', translations, theme: { config }, business }
     const lang = meta.lang || app.lang
     const t = (key) => (translations[lang] && translations[lang][key]) || key
-    return pug.renderFile(path.join(VIEWS_DIR, 'layouts', 'layout.pug'), {
+    return pug.renderFile(path.join(VIEWS_DIR, view), {
         basedir: VIEWS_DIR,
         app,
         meta: { title: 'Home', href: '/index.html', ...meta },
@@ -55,8 +76,19 @@ describe('Contract present (shared, §S2)', () => {
         for (const view of VIEWS) expect(fs.existsSync(path.join(VIEWS_DIR, view)), view).toBe(true)
     })
 
-    it('ships every shared seam of §S2.4, with no markup of its own', () => {
-        for (const seam of SEAMS) {
+    it('ships every page type and partial of §S3.1', () => {
+        for (const view of [...PAGE_TYPES, ...BUSINESS_PARTIALS]) expect(fs.existsSync(path.join(VIEWS_DIR, view)), view).toBe(true)
+    })
+
+    it('extends the layout and fills block main in every page type (§S2.3)', () => {
+        for (const view of PAGE_TYPES) {
+            expect(read(view), view).toMatch(/^extends \.\.\/layouts\/layout\.pug$/m)
+            expect(read(view), view).toMatch(/^block main$/m)
+        }
+    })
+
+    it('ships every seam of §S2.4 and §S3.2, with no markup of its own', () => {
+        for (const seam of [...SEAMS, ...BUSINESS_SEAMS]) {
             expect(fs.existsSync(path.join(VIEWS_DIR, seam)), seam).toBe(true)
             const code = read(seam).split('\n').filter((line) => line.trim() && !line.trim().startsWith('//-'))
             expect(code, seam).toEqual([])
@@ -99,14 +131,14 @@ describe('Contract present (shared, §S2)', () => {
         expect(config.footer).toEqual({ show_hours: true })
     })
 
-    it('uses every shell class of §S3.6 in views/', () => {
+    it('uses every class of §S3.6 in views/', () => {
         const source = allViews()
-        for (const name of SHELL_CLASSES) {
+        for (const name of [...SHELL_CLASSES, ...BUSINESS_CLASSES]) {
             expect(source, name).toMatch(new RegExp(`(\\.|'|")${name}(?![\\w-])`))
         }
     })
 
-    it('passes every shared UI string through t() with the keys of §S2.6', () => {
+    it('passes every UI string through t() with the keys of §S2.6 and §S3.3', () => {
         const source = allViews()
         for (const key of T_KEYS) expect(source, key).toContain(`t('${key}')`)
     })
@@ -222,5 +254,221 @@ describe('Shell (§S2.2–§S2.5, §S2.8)', () => {
         const pagesData = [page('/index.html', { slug: 'home' })]
         expect(renderShell({ translations: { en: {}, de: {} }, pagesData })).not.toContain('lang-switch')
         expect(renderShell({ translations: { en: {} }, pagesData })).not.toContain('lang-switch')
+    })
+})
+
+const BUSINESS = {
+    name: 'Bäckerei Brot & Zeit',
+    street: 'Bergstraße 12',
+    postal_code: 10115,
+    city: 'Berlin',
+    phone: '+49 30 1234567',
+    email: 'hallo@example.org',
+    hours: [
+        { days: 'Mon–Fri', opens: '07:00', closes: '18:00' },
+        { days: 'Sun', closed: true },
+        { days: 'Sat', opens: '08:00' },
+        { opens: '09:00', closes: '10:00' },
+    ],
+    hours_note: 'Closed on public holidays',
+}
+
+const mainOf = (html) => html.match(/<main[^>]*>([\s\S]*)<\/main>/)[1]
+const footerOf = (html) => html.match(/<footer[\s\S]*<\/footer>/)[0]
+const headings = (html) => [...html.matchAll(/<h([1-6])[\s>]/g)].map((m) => Number(m[1]))
+const renderPage = (type, options = {}) => renderShell({ view: `pages/${type}.pug`, business: BUSINESS, ...options })
+
+describe('Page types (§S3.1)', () => {
+    it('renders exactly one <h1> and skips no heading level in every page type', () => {
+        const cards = [{ title: 'Bread' }]
+        const pagesData = [page('/projects/a.html', { title: 'A' })]
+        for (const type of ['default', 'home', 'contact', 'list', 'gallery']) {
+            for (const cardsTitle of [undefined, 'What we bake']) {
+                const html = renderPage(type, { pagesData, meta: { title: 'T', dirname: '/projects', href: '/projects/index.html', cards, cards_title: cardsTitle, show_hours: true } })
+                const levels = headings(html)
+                expect(levels.filter((level) => level === 1), type).toHaveLength(1)
+                expect(levels[0], type).toBe(1)
+                levels.forEach((level, i) => i && expect(level - levels[i - 1], `${type}: ${levels}`).toBeLessThanOrEqual(1))
+            }
+        }
+    })
+
+    it('default: header with lead, body, cards and opening hours in order', () => {
+        const html = mainOf(renderPage('default', { meta: { title: 'About', lead: 'Since 1990', cards: [{ title: 'Bread', text: 'Daily' }], show_hours: true } }))
+        expect(html).toMatch(
+            /^<header class="page__header"><h1 class="page__title">About<\/h1><p class="page__lead">Since 1990<\/p><\/header><div class="page__body"><p>Body<\/p><\/div><ul class="cards">[\s\S]*<\/ul><dl class="opening-hours">[\s\S]*<\/p>$/
+        )
+    })
+
+    it('default: no lead, no cards and no hours unless set', () => {
+        const html = mainOf(renderPage('default', { meta: { title: 'About' } }))
+        expect(html).toBe('<header class="page__header"><h1 class="page__title">About</h1></header><div class="page__body"><p>Body</p></div>')
+        // show_hours without app.business.hours renders nothing either
+        expect(mainOf(renderPage('default', { business: {}, meta: { title: 'About', show_hours: true } }))).not.toContain('opening-hours')
+    })
+
+    it('cards: h2 titles, a link only with href, entries without a title left out', () => {
+        const cards = [{ title: 'Bread', text: 'Daily', href: '/bread.html' }, { title: 'Cake' }, { text: 'no title' }, null]
+        expect(mainOf(renderPage('default', { meta: { title: 'S', cards } }))).toContain(
+            '<ul class="cards"><li class="card"><h2 class="card__title"><a class="card__link" href="/bread.html">Bread</a></h2><p class="card__text">Daily</p></li>' +
+            '<li class="card"><h2 class="card__title">Cake</h2></li></ul>'
+        )
+    })
+
+    it('cards: with cards_title an h2.cards__title first and h3 card titles', () => {
+        const html = mainOf(renderPage('default', { meta: { title: 'S', cards_title: 'Offer', cards: [{ title: 'Bread' }] } }))
+        expect(html).toContain('<h2 class="cards__title">Offer</h2><ul class="cards"><li class="card"><h3 class="card__title">Bread</h3></li></ul>')
+        // no cards, no cards title
+        expect(mainOf(renderPage('default', { meta: { title: 'S', cards_title: 'Offer' } }))).not.toContain('cards__title')
+    })
+
+    it('home: the hero holds the <h1>, both buttons, and the empty media seam', () => {
+        const hero = { title: 'Fresh bread', text: 'Since 1990', cta: { label: 'Visit', href: '/contact.html' }, cta_secondary: { label: 'Menu', href: '/menu.html' } }
+        const html = mainOf(renderPage('home', { meta: { title: 'Home', hero } }))
+        expect(html).toMatch(
+            /^<section class="hero"><div class="hero__inner"><h1 class="hero__title">Fresh bread<\/h1><p class="hero__text">Since 1990<\/p>/
+        )
+        expect(html).toContain(
+            '<p class="hero__actions"><a class="button" href="/contact.html">Visit</a><a class="button button--secondary" href="/menu.html">Menu</a></p><div class="hero__media"></div></div></section><div class="page__body"><p>Body</p></div>'
+        )
+        expect(html).not.toContain('page__header')
+    })
+
+    it('home: without hero the title falls back to meta.title, and a half-set cta renders no link', () => {
+        expect(mainOf(renderPage('home', { meta: { title: 'Home' } }))).toBe(
+            '<section class="hero"><div class="hero__inner"><h1 class="hero__title">Home</h1><div class="hero__media"></div></div></section><div class="page__body"><p>Body</p></div>'
+        )
+        const hero = { cta: { label: 'Visit' }, cta_secondary: { href: '/menu.html' } }
+        const html = mainOf(renderPage('home', { meta: { title: 'Home', hero } }))
+        expect(html).not.toContain('<a')
+        expect(html).not.toContain('hero__actions')
+    })
+
+    it('home: opening hours only with show_hours', () => {
+        expect(mainOf(renderPage('home', { meta: { title: 'Home' } }))).not.toContain('opening-hours')
+        expect(mainOf(renderPage('home', { meta: { title: 'Home', show_hours: true } }))).toContain('<dl class="opening-hours">')
+    })
+
+    it('contact: the form seam next to the address and opening hours', () => {
+        const html = mainOf(renderPage('contact', { meta: { title: 'Contact' } }))
+        expect(html).toMatch(
+            /<div class="page__body"><p>Body<\/p><\/div><div class="contact"><div class="contact__form"><\/div><aside class="contact__aside"><h2>Contact details<\/h2><address class="address">[\s\S]*<\/address><h2>Opening hours<\/h2><dl class="opening-hours">[\s\S]*<\/p><\/aside><\/div>$/
+        )
+    })
+
+    it('contact: headings leave with their data, the aside with both', () => {
+        const noHours = mainOf(renderPage('contact', { business: { city: 'Berlin' }, meta: { title: 'Contact' } }))
+        expect(noHours).toContain('<aside class="contact__aside"><h2>Contact details</h2><address class="address"><span class="address__line">Berlin</span></address></aside>')
+        const onlyHours = mainOf(renderPage('contact', { business: { hours: [{ days: 'Sun', closed: true }] }, meta: { title: 'Contact' } }))
+        expect(onlyHours).not.toContain('Contact details')
+        expect(onlyHours).toContain('<aside class="contact__aside"><h2>Opening hours</h2>')
+        expect(mainOf(renderPage('contact', { business: undefined, meta: { title: 'Contact' } }))).toMatch(/<div class="contact"><div class="contact__form"><\/div><\/div>$/)
+    })
+
+    it('gallery: the body is div.page__body.gallery', () => {
+        expect(mainOf(renderPage('gallery', { meta: { title: 'Project' } }))).toBe(
+            '<header class="page__header"><h1 class="page__title">Project</h1></header><div class="page__body gallery"><p>Body</p></div>'
+        )
+    })
+})
+
+describe('Child pages (§S3.1b)', () => {
+    const listMeta = { title: 'Projects', href: '/projects/index.html', dirname: '/projects', filename: 'index.html' }
+    const pagesData = [
+        { content: '', meta: { ...listMeta, layout: 'pages/list.pug' } },
+        page('/projects/zebra.html', { title: 'Zebra' }),
+        page('/projects/apple.html', { title: 'Apple', description: 'An apple' }),
+        page('/projects/second.html', { title: 'Second', order: 2 }),
+        page('/projects/first.html', { title: 'Zz first', order: 1 }),
+        page('/projects/minus.html', { title: 'Minus', order: -1 }),
+        page('/projects/string-order.html', { title: 'B string', order: '0' }),
+        page('/projects/sub/deep.html', { title: 'Deep' }),
+        page('/other/x.html', { title: 'Other' }),
+        page('/de/projects/apfel.html', { title: 'Apfel', lang: 'de' }),
+        { content: '', meta: { href: '/projects/draft.html', dirname: '/projects', filename: 'draft.html', title: 'Draft' } },
+    ]
+    const titles = (html) => [...html.matchAll(/<a class="card__link" href="[^"]*">([^<]*)<\/a>/g)].map((m) => m[1])
+
+    it('lists the rendered pages of the same folder and language, not itself, order first, then title', () => {
+        const html = mainOf(renderPage('list', { pagesData, meta: listMeta }))
+        expect(titles(html)).toEqual(['Minus', 'Zz first', 'Second', 'Apple', 'B string', 'Zebra'])
+        expect(html).toContain(
+            '<ul class="cards cards--list"><li class="card"><div class="card__media"></div><h2 class="card__title"><a class="card__link" href="/projects/minus.html">Minus</a></h2></li>'
+        )
+        expect(html).toContain('<a class="card__link" href="/projects/apple.html">Apple</a></h2><p class="card__text">An apple</p></li>')
+    })
+
+    it('does not depend on the order of pagesData', () => {
+        const forward = titles(mainOf(renderPage('list', { pagesData, meta: listMeta })))
+        const backward = titles(mainOf(renderPage('list', { pagesData: [...pagesData].reverse(), meta: listMeta })))
+        expect(backward).toEqual(forward)
+    })
+
+    it('reads meta.list_dir, with or without slashes', () => {
+        for (const listDir of ['/projects/sub', 'projects/sub/']) {
+            const html = mainOf(renderPage('list', { pagesData, meta: { ...listMeta, href: '/work.html', dirname: '/', list_dir: listDir } }))
+            expect(titles(html), listDir).toEqual(['Deep'])
+        }
+    })
+
+    it('lists the pages of its own language only', () => {
+        const html = mainOf(renderPage('list', { pagesData, meta: { ...listMeta, href: '/de/projects/index.html', dirname: '/de/projects', lang: 'de' } }))
+        expect(titles(html)).toEqual(['Apfel'])
+    })
+
+    it('sorts by title even when lang is no valid locale tag', () => {
+        const odd = [page('/projects/b.html', { title: 'B', lang: 'en_US' }), page('/projects/a.html', { title: 'A', lang: 'en_US' })]
+        const html = mainOf(renderPage('list', { pagesData: odd, meta: { ...listMeta, lang: 'en_US' } }))
+        expect(titles(html)).toEqual(['A', 'B'])
+    })
+
+    it('renders no list when there is no child page', () => {
+        expect(mainOf(renderPage('list', { pagesData, meta: { ...listMeta, dirname: '/empty' } }))).not.toContain('<ul')
+    })
+})
+
+describe('Address and opening hours (§S3.1)', () => {
+    it('renders the address lines, a tel: link without spaces and a mailto: link', () => {
+        const html = mainOf(renderPage('contact', { meta: { title: 'Contact' }, translations: { en: { Phone: 'Tel.' } } }))
+        expect(html).toContain(
+            '<address class="address"><span class="address__line">Bergstraße 12</span><span class="address__line">10115 Berlin</span>' +
+            '<span class="address__line">Tel.: <a class="address__link" href="tel:+49301234567">+49 30 1234567</a></span>' +
+            '<span class="address__line">Email: <a class="address__link" href="mailto:hallo@example.org">hallo@example.org</a></span></address>'
+        )
+    })
+
+    it('renders closed rows and opens–closes rows, drops incomplete ones, and the note, through t()', () => {
+        const translations = { de: { 'Mon–Fri': 'Mo–Fr', Sun: 'So', Closed: 'Geschlossen', 'Closed on public holidays': 'An Feiertagen geschlossen' } }
+        const html = mainOf(renderPage('default', { translations, meta: { title: 'Über uns', lang: 'de', show_hours: true } }))
+        expect(html).toContain(
+            '<dl class="opening-hours"><div class="opening-hours__row"><dt class="opening-hours__days">Mo–Fr</dt>' +
+            '<dd class="opening-hours__time"><time datetime="07:00">07:00</time> – <time datetime="18:00">18:00</time></dd></div>' +
+            '<div class="opening-hours__row"><dt class="opening-hours__days">So</dt><dd class="opening-hours__time">Geschlossen</dd></div></dl>' +
+            '<p class="opening-hours__note">An Feiertagen geschlossen</p>'
+        )
+    })
+
+    it('renders no address and no hours without app.business', () => {
+        const html = renderPage('contact', { business: undefined, meta: { title: 'Contact' } })
+        expect(html).not.toContain('<address')
+        expect(html).not.toContain('opening-hours')
+    })
+})
+
+describe('Business footer (§S3.1 "Footer", D3)', () => {
+    it('renders three columns: name and address, opening hours, the footer-extra seam', () => {
+        const footer = footerOf(renderPage('default', { meta: { title: 'About' } }))
+        expect(footer).toMatch(
+            /^<footer class="site-footer"><div class="site-footer__inner"><div class="site-footer__cols"><div class="site-footer__col"><h2 class="site-footer__heading">Bäckerei Brot &amp; Zeit<\/h2><address class="address">[\s\S]*<\/address><\/div><div class="site-footer__col"><h2 class="site-footer__heading">Opening hours<\/h2><dl class="opening-hours">[\s\S]*<\/p><\/div><div class="site-footer__col"><\/div><\/div><p class="site-footer__copy">/
+        )
+    })
+
+    it('leaves the hours column empty with footer.show_hours false or no hours, and names the site without a business name', () => {
+        const config = { ...defaults(), footer: { show_hours: false } }
+        expect(footerOf(renderPage('default', { config, meta: { title: 'About' } }))).toContain('</div><div class="site-footer__col"></div><div class="site-footer__col"></div></div>')
+        const bare = footerOf(renderPage('default', { business: undefined, meta: { title: 'About' } }))
+        expect(bare).toContain(
+            '<div class="site-footer__cols"><div class="site-footer__col"><h2 class="site-footer__heading">Brot &amp; Zeit</h2></div><div class="site-footer__col"></div><div class="site-footer__col"></div></div>'
+        )
     })
 })

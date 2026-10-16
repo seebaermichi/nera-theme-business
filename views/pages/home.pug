@@ -1,0 +1,24 @@
+//- The front page (§S3.1, §S3.1a): the hero, which holds the page's <h1>,
+//- then body, cards (meta.cards) and opening hours (meta.show_hours).
+extends ../layouts/layout.pug
+
+block main
+    section.hero
+        .hero__inner
+            h1.hero__title= (meta.hero && meta.hero.title) || meta.title || app.name
+            if meta.hero && meta.hero.text
+                p.hero__text= meta.hero.text
+            if themeBusiness.heroActions().length
+                p.hero__actions
+                    each action in themeBusiness.heroActions()
+                        if action.secondary
+                            a.button.button--secondary(href=action.href)= action.label
+                        else
+                            a.button(href=action.href)= action.label
+            .hero__media
+                include ../partials/hero-media.pug
+    .page__body
+        != content
+    include ../partials/cards.pug
+    if meta.show_hours
+        include ../partials/opening-hours.pug

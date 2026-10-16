@@ -1,0 +1,11 @@
+//- About, services, legal pages, any standard page (§S3.1): header, body,
+//- cards (meta.cards), opening hours (meta.show_hours).
+extends ../layouts/layout.pug
+
+block main
+    include ../partials/page-header.pug
+    .page__body
+        != content
+    include ../partials/cards.pug
+    if meta.show_hours
+        include ../partials/opening-hours.pug

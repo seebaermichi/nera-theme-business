@@ -1,0 +1,10 @@
+//- One portfolio project or photo page (§S3.1): header, then the body as
+//- div.page__body.gallery. The CSS lays every figure.nera-image directly in it
+//- (plugin-images' output for a captioned image) out as a grid; without
+//- plugin-images the images stay inline.
+extends ../layouts/layout.pug
+
+block main
+    include ../partials/page-header.pug
+    .page__body.gallery
+        != content

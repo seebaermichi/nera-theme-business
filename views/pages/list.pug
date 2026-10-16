@@ -1,0 +1,19 @@
+//- A section index (§S3.1, §S3.1b): header, body, one card per child page —
+//- the pages in meta.list_dir (default: this page's folder), in this page's
+//- language, sorted by meta.order, then title.
+extends ../layouts/layout.pug
+
+block main
+    include ../partials/page-header.pug
+    .page__body
+        != content
+    if themeBusiness.childPages().length
+        ul.cards.cards--list
+            each item in themeBusiness.childPages()
+                li.card
+                    .card__media
+                        include ../partials/card-media.pug
+                    h2.card__title
+                        a.card__link(href=item.meta.href)= item.meta.title || item.meta.href
+                    if item.meta.description
+                        p.card__text= item.meta.description

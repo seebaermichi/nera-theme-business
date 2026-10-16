@@ -1,0 +1,17 @@
+//- The cards of meta.cards (§S3.1 "Cards"), a list of { title, text, href }
+//- with href optional; an entry without a title is left out. With
+//- meta.cards_title the list gets an h2 and the card titles are h3, else they
+//- are h2.
+if themeBusiness.cards().length
+    if meta.cards_title
+        h2.cards__title= meta.cards_title
+    ul.cards
+        each card in themeBusiness.cards()
+            li.card
+                #{meta.cards_title ? 'h3' : 'h2'}.card__title
+                    if card.href
+                        a.card__link(href=card.href)= card.title
+                    else
+                        = card.title
+                if card.text
+                    p.card__text= card.text

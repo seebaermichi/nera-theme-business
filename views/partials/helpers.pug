@@ -124,5 +124,79 @@
             return Object.keys(translations).length >= 2 && links.some((link) => !link.current) ? links : []
         }
 
-        return { toDate, homePage, tokenRule, extraCss, footerLinks, languageSwitch }
+        // The business's facts (§S3.1), from the site's config/app.yaml.
+        const business = () => (app.business && typeof app.business === 'object' ? app.business : {})
+        const text = (value) => (typeof value === 'string' || typeof value === 'number' ? String(value).trim() : '')
+        const businessName = () => text(business().name) || app.name
+
+        // The postal lines of the address: street, postal code and city,
+        // country — each only when set.
+        const addressLines = () => {
+            const b = business()
+            return [text(b.street), [text(b.postal_code), text(b.city)].filter(Boolean).join(' '), text(b.country)]
+                .filter(Boolean)
+        }
+        const phone = () => text(business().phone)
+        const email = () => text(business().email)
+        const hasAddress = () => addressLines().length > 0 || Boolean(phone() || email())
+
+        // A tel: link needs the number without spaces (§S3.1).
+        const phoneHref = () => 'tel:' + phone().replace(/\s+/g, '')
+
+        // The rows of `business.hours` that say something: `days` set, and
+        // either `closed: true` or both `opens` and `closes`.
+        const hours = () =>
+            (Array.isArray(business().hours) ? business().hours : [])
+                .filter((row) => row && text(row.days))
+                .map((row) => ({ days: text(row.days), closed: row.closed === true, opens: text(row.opens), closes: text(row.closes) }))
+                .filter((row) => row.closed || (row.opens && row.closes))
+        const hoursNote = () => (hours().length ? text(business().hours_note) : '')
+        const showFooterHours = () => !(config.footer && config.footer.show_hours === false)
+
+        // The home hero's buttons (§S3.1a): `cta`, then `cta_secondary`, each
+        // only with both a label and an href, so no empty link is rendered.
+        const heroActions = () => {
+            const hero = meta.hero && typeof meta.hero === 'object' ? meta.hero : {}
+            return [['cta', false], ['cta_secondary', true]]
+                .map(([key, secondary]) => ({ ...hero[key], secondary }))
+                .filter((action) => text(action.label) && text(action.href))
+                .map((action) => ({ label: text(action.label), href: text(action.href), secondary: action.secondary }))
+        }
+
+        // `meta.cards` (§S3.1 "Cards"): entries with a title; `href` optional.
+        const cards = () =>
+            (Array.isArray(meta.cards) ? meta.cards : [])
+                .filter((card) => card && text(card.title))
+                .map((card) => ({ title: text(card.title), text: text(card.text), href: text(card.href) }))
+
+        // A site path as core writes `meta.dirname`: one leading `/`, no
+        // trailing one (the root is `/`).
+        const dirPath = (value) => '/' + String(value).replace(/^\/+|\/+$/g, '')
+
+        // The child pages of a list page (§S3.1b): rendered (a `layout`), in
+        // the page's language, in `meta.list_dir` (default: the page's own
+        // folder), not the page itself. Numeric `order` first, ascending; then
+        // by title, then href, so the order never depends on pagesData's.
+        const childPages = () => {
+            const lang = pageLang({ meta })
+            const dir = dirPath(text(meta.list_dir) || meta.dirname || '/')
+            const order = (page) => (typeof page.meta.order === 'number' && Number.isFinite(page.meta.order) ? page.meta.order : Infinity)
+            // A `lang` that is no valid locale tag (`en_US`) would make
+            // Intl throw and fail the build; compare by the default then.
+            let collator
+            try { collator = new Intl.Collator(lang) } catch { collator = new Intl.Collator() }
+            return pages()
+                .filter((page) => page.meta.layout && pageLang(page) === lang && page.meta.href !== meta.href)
+                .filter((page) => dirPath(page.meta.dirname || '/') === dir)
+                .sort((a, b) =>
+                    (order(a) === order(b) ? 0 : order(a) < order(b) ? -1 : 1) ||
+                    collator.compare(String(a.meta.title || ''), String(b.meta.title || '')) ||
+                    byHref(a, b))
+        }
+
+        return {
+            toDate, homePage, tokenRule, extraCss, footerLinks, languageSwitch,
+            businessName, addressLines, phone, email, hasAddress, phoneHref, hours, hoursNote, showFooterHours,
+            heroActions, cards, childPages,
+        }
     })()

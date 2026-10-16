@@ -1,0 +1,6 @@
+//- The page header of every page type but home (§S3.1 "Header"): the page's
+//- one <h1> and its lead.
+header.page__header
+    h1.page__title= meta.title || app.name
+    if meta.lead
+        p.page__lead= meta.lead

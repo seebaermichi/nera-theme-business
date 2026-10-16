@@ -1,0 +1,18 @@
+//- The opening hours of app.business.hours (§S3.1): one row per entry, its
+//- days and app.business.hours_note through t(). A row is either closed or
+//- has both opens and closes; any other row is left out. Renders nothing
+//- when no row is left.
+if themeBusiness.hours().length
+    dl.opening-hours
+        each row in themeBusiness.hours()
+            .opening-hours__row
+                dt.opening-hours__days= t(row.days)
+                dd.opening-hours__time
+                    if row.closed
+                        = t('Closed')
+                    else
+                        time(datetime=row.opens)= row.opens
+                        |  – 
+                        time(datetime=row.closes)= row.closes
+    if themeBusiness.hoursNote()
+        p.opening-hours__note= t(themeBusiness.hoursNote())

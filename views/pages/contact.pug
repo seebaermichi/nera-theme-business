@@ -1,0 +1,20 @@
+//- The contact page (§S3.1): header, body, then the form (seam
+//- contact-form.pug) next to the business's address and opening hours. A
+//- heading is left out with the data it would announce.
+extends ../layouts/layout.pug
+
+block main
+    include ../partials/page-header.pug
+    .page__body
+        != content
+    .contact
+        .contact__form
+            include ../partials/contact-form.pug
+        if themeBusiness.hasAddress() || themeBusiness.hours().length
+            aside.contact__aside
+                if themeBusiness.hasAddress()
+                    h2= t('Contact details')
+                    include ../partials/address.pug
+                if themeBusiness.hours().length
+                    h2= t('Opening hours')
+                    include ../partials/opening-hours.pug

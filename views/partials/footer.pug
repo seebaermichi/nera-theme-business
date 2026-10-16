@@ -1,8 +1,19 @@
-//- The site footer (§S2.2): the footer-extra seam, the legal links of
-//- `footer_links`, and the copyright line.
+//- The site footer (§S2.2, §S3.1 "Footer"): three columns — the business
+//- name and address; the opening hours (unless footer.show_hours is false);
+//- the footer-extra seam — then the legal links of `footer_links` and the
+//- copyright line. A column with nothing to show stays an empty div.
 footer.site-footer
     .site-footer__inner
-        include footer-extra.pug
+        .site-footer__cols
+            .site-footer__col
+                h2.site-footer__heading= themeBusiness.businessName()
+                include address.pug
+            .site-footer__col
+                if themeBusiness.showFooterHours() && themeBusiness.hours().length
+                    h2.site-footer__heading= t('Opening hours')
+                    include opening-hours.pug
+            .site-footer__col
+                include footer-extra.pug
         if themeBusiness.footerLinks(pageLang({ meta })).length
             nav.site-footer__legal(aria-label=t('Legal'))
                 each link in themeBusiness.footerLinks(pageLang({ meta }))

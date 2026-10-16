@@ -1,0 +1,5 @@
+//- Seam (§S3.2): div.hero__media of the home hero, hidden by the CSS while
+//- empty. In scope: meta. Empty in the theme. A site with
+//- @nera-static/plugin-images overrides it with:
+//-     include /vendor/plugin-images/picture
+//-     +picture(meta.images && meta.images.hero, { alt: meta.hero.image_alt, class: 'hero__image', loading: 'eager' })

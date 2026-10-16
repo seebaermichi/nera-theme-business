@@ -1,0 +1,15 @@
+//- The business's address (§S3.1) from app.business: one line per set
+//- field, then phone (a tel: link without spaces) and email (a mailto: link).
+//- Renders nothing when app.business has none of them.
+if themeBusiness.hasAddress()
+    address.address
+        each line in themeBusiness.addressLines()
+            span.address__line= line
+        if themeBusiness.phone()
+            span.address__line
+                | #{t('Phone')}: 
+                a.address__link(href=themeBusiness.phoneHref())= themeBusiness.phone()
+        if themeBusiness.email()
+            span.address__line
+                | #{t('Email')}: 
+                a.address__link(href='mailto:' + themeBusiness.email())= themeBusiness.email()
