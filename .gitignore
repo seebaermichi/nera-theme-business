@@ -41,3 +41,7 @@ build/
 test/site/public/
 .nera-cache/
 plans/
+
+# Design source: the 21 MB of demo PNGs stay local; the fixture gets
+# downscaled copies (plan D6)
+design/demo-img/
