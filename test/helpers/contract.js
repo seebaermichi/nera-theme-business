@@ -115,3 +115,58 @@ export const BUSINESS_CLASSES = [
     'site-footer__col',
     'site-footer__heading',
 ]
+
+export const PUBLIC_CLASSES = [...SHELL_CLASSES, ...BUSINESS_CLASSES]
+
+// §S3.5 with the peer floors decided for 1.0.0 (D5, §S8).
+export const PLUGIN_CLASSES = {
+    '@nera-static/plugin-contact-form': {
+        range: '^1.1.1',
+        classes: [
+            'contact-form',
+            'contact-form__intro',
+            'contact-form__field',
+            'contact-form__label',
+            'contact-form__label--checkbox',
+            'contact-form__label--radio',
+            'contact-form__label-text',
+            'contact-form__input',
+            'contact-form__input--textarea',
+            'contact-form__input--select',
+            'contact-form__input--checkbox',
+            'contact-form__input--radio',
+            'contact-form__input--error',
+            'contact-form__options',
+            'contact-form__consent',
+            'contact-form__status',
+            'contact-form__submit',
+        ],
+    },
+    '@nera-static/plugin-images': {
+        range: '^1.0.2',
+        classes: ['nera-image', 'nera-image__caption'],
+    },
+    '@nera-static/plugin-navigation': {
+        range: '^3.1.0',
+        classes: ['nav', 'nav--list', 'nav__item', 'nav__link', 'nav__link--active', 'nav__link--active-path'],
+    },
+    '@nera-static/plugin-social-media-links': {
+        range: '^2.3.0',
+        classes: [
+            'social-media-links',
+            'social-media-links__list',
+            'social-media-links__item',
+            'social-media-links__link',
+            'social-media-links__icon',
+            'social-media-links__label',
+        ],
+    },
+}
+
+// §S3.5: plugin-contact-form classes the theme must never style, as both
+// elements have to stay hidden.
+export const UNSTYLED_PLUGIN_CLASSES = ['contact-form__decoy', 'contact-form__recipient']
+
+// The other theme's values, for "Distinct" (§S4.4, §S4.1).
+export const BLOG_FONT_BODY = 'Charter, \'Bitstream Charter\', \'Sitka Text\', Cambria, Georgia, serif'
+export const BLOG_PAGE_TYPES = ['pages/default.pug', 'pages/home.pug', 'pages/post.pug', 'pages/archive.pug', 'pages/tag.pug']
