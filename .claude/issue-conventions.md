@@ -99,7 +99,7 @@ way) and swapped to §S3.
 1. Toolchain — `package.json`, lockfile, eslint/vitest config, CI workflows — `npm ci` and the CI commands pass
 2. Contract — `config/theme.yaml` tokens and keys, view/seam/partial skeleton — contract-present check passes
 3. Behaviour — page types, layouts, seams with plugin output, token emission — fixture builds, `nera check` clean
-4. UI — `assets/css/theme.css`, the "Clear and sturdy" look, contrast — §S7 scripts + walkthrough
+4. UI — `assets/css/theme.css`, the "Crust" look (§S3.4), contrast — §S7 scripts + walkthrough
 5. Docs — README, CHANGELOG, §S3 status in `../generator/ROADMAP-themes.md`
 
 ## Reconciliation steps (run when resolving an issue)
