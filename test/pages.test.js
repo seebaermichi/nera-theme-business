@@ -103,6 +103,25 @@ describe('Page types (§S3.1)', () => {
         expect(de).toContain('<p class="opening-hours__note">An Feiertagen geschlossen.</p>')
     })
 
+    for (const [lang, heading, files] of [
+        ['en', 'Opening hours', ['index.html', 'opening-hours.html']],
+        ['de', 'Öffnungszeiten', ['de/index.html', 'de/oeffnungszeiten.html']],
+    ]) {
+        it(`home and default with show_hours (${lang}): one h2 "${heading}" directly before the hours`, () => {
+            for (const file of files) {
+                const main = elementByClass(page(pub, file), 'main', 'site-main')
+                expect(main, file).toMatch(new RegExp(`<h2>${heading}</h2>\\s*<dl class="opening-hours">`))
+                expect(main.split(`<h2>${heading}</h2>`), file).toHaveLength(2)
+            }
+        })
+    }
+
+    it('home and default without show_hours: no hours heading in main', () => {
+        for (const file of ['services.html', 'imprint.html', 'de/leistungen.html']) {
+            expect(elementByClass(page(pub, file), 'main', 'site-main'), file).not.toMatch(/<h2>(Opening hours|Öffnungszeiten)<\/h2>/)
+        }
+    })
+
     it('contact: header, body, then the form next to the aside with address and opening hours', () => {
         const html = page(pub, 'contact.html')
         const contact = elementByClass(html, 'div', 'contact')

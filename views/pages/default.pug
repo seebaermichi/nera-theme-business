@@ -1,5 +1,6 @@
 //- About, services, legal pages, any standard page (§S3.1): header, body,
-//- cards (meta.cards), opening hours (meta.show_hours).
+//- cards (meta.cards), opening hours (meta.show_hours) under their h2, which
+//- is left out with the hours.
 extends ../layouts/layout.pug
 
 block main
@@ -7,5 +8,6 @@ block main
     .page__body
         != content
     include ../partials/cards.pug
-    if meta.show_hours
+    if meta.show_hours && themeBusiness.hours().length
+        h2= t('Opening hours')
         include ../partials/opening-hours.pug

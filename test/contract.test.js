@@ -296,15 +296,18 @@ describe('Page types (§S3.1)', () => {
     it('default: header with lead, body, cards and opening hours in order', () => {
         const html = mainOf(renderPage('default', { meta: { title: 'About', lead: 'Since 1990', cards: [{ title: 'Bread', text: 'Daily' }], show_hours: true } }))
         expect(html).toMatch(
-            /^<header class="page__header"><h1 class="page__title">About<\/h1><p class="page__lead">Since 1990<\/p><\/header><div class="page__body"><p>Body<\/p><\/div><ul class="cards">[\s\S]*<\/ul><dl class="opening-hours">[\s\S]*<\/p>$/
+            /^<header class="page__header"><h1 class="page__title">About<\/h1><p class="page__lead">Since 1990<\/p><\/header><div class="page__body"><p>Body<\/p><\/div><ul class="cards">[\s\S]*<\/ul><h2>Opening hours<\/h2><dl class="opening-hours">[\s\S]*<\/p>$/
         )
     })
 
     it('default: no lead, no cards and no hours unless set', () => {
         const html = mainOf(renderPage('default', { meta: { title: 'About' } }))
         expect(html).toBe('<header class="page__header"><h1 class="page__title">About</h1></header><div class="page__body"><p>Body</p></div>')
-        // show_hours without app.business.hours renders nothing either
-        expect(mainOf(renderPage('default', { business: {}, meta: { title: 'About', show_hours: true } }))).not.toContain('opening-hours')
+        // show_hours without a row left renders nothing either, not even the heading
+        for (const business of [{}, { hours: [{ opens: '07:00', closes: '18:00' }] }]) {
+            const html = mainOf(renderPage('default', { business, meta: { title: 'About', show_hours: true } }))
+            expect(html).not.toMatch(/opening-hours|<h2/)
+        }
     })
 
     it('cards: h2 titles, a link only with href, entries without a title left out', () => {
@@ -344,9 +347,10 @@ describe('Page types (§S3.1)', () => {
         expect(html).not.toContain('hero__actions')
     })
 
-    it('home: opening hours only with show_hours', () => {
-        expect(mainOf(renderPage('home', { meta: { title: 'Home' } }))).not.toContain('opening-hours')
-        expect(mainOf(renderPage('home', { meta: { title: 'Home', show_hours: true } }))).toContain('<dl class="opening-hours">')
+    it('home: opening hours under their h2 only with show_hours and a row left', () => {
+        expect(mainOf(renderPage('home', { meta: { title: 'Home' } }))).not.toMatch(/opening-hours|<h2/)
+        expect(mainOf(renderPage('home', { meta: { title: 'Home', show_hours: true } }))).toContain('<h2>Opening hours</h2><dl class="opening-hours">')
+        expect(mainOf(renderPage('home', { business: {}, meta: { title: 'Home', show_hours: true } }))).not.toMatch(/opening-hours|<h2/)
     })
 
     it('contact: the form seam next to the address and opening hours', () => {

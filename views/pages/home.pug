@@ -1,5 +1,6 @@
 //- The front page (§S3.1, §S3.1a): the hero, which holds the page's <h1>,
-//- then body, cards (meta.cards) and opening hours (meta.show_hours).
+//- then body, cards (meta.cards) and opening hours (meta.show_hours) under
+//- their h2, which is left out with the hours.
 extends ../layouts/layout.pug
 
 block main
@@ -20,5 +21,6 @@ block main
     .page__body
         != content
     include ../partials/cards.pug
-    if meta.show_hours
+    if meta.show_hours && themeBusiness.hours().length
+        h2= t('Opening hours')
         include ../partials/opening-hours.pug

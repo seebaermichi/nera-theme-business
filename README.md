@@ -32,8 +32,8 @@ Set a page's `layout` to one of these:
 
 | `layout:` | for | renders |
 |---|---|---|
-| `pages/home.pug` | the front page | the hero (title, text, up to two buttons, the `hero-media` seam), body, cards, opening hours (with `show_hours: true`) |
-| `pages/default.pug` | about, services, legal pages, anything else | page header, body, cards, opening hours (with `show_hours: true`) |
+| `pages/home.pug` | the front page | the hero (title, text, up to two buttons, the `hero-media` seam), body, cards, opening hours under an `Opening hours` heading (with `show_hours: true`) |
+| `pages/default.pug` | about, services, legal pages, anything else | page header, body, cards, opening hours under an `Opening hours` heading (with `show_hours: true`) |
 | `pages/contact.pug` | the contact page | page header, body, the `contact-form` seam next to an aside with the address and the opening hours |
 | `pages/list.pug` | a section index: projects, a team, an offer list | page header, body, one card per child page |
 | `pages/gallery.pug` | one portfolio project, a photo page | page header, the body laid out as an image grid |
@@ -266,7 +266,7 @@ translations:
 | `Main navigation` | `aria-label` of the header navigation |
 | `Language` | `aria-label` of the language switch |
 | `Legal` | `aria-label` of the footer's legal links |
-| `Opening hours` | heading of the hours in the footer and on the contact page |
+| `Opening hours` | heading of the hours in the footer, on the contact page, and on home and default pages with `show_hours: true` |
 | `Closed` | an hours row with `closed: true` |
 | `Contact details` | heading of the address on the contact page |
 | `Phone`, `Email` | the labels before the phone number and the email address |
