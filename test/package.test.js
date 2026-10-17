@@ -5,17 +5,14 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import { execFileSync } from 'child_process'
 import { describe, expect, it } from 'vitest'
+import { PLUGIN_CLASSES } from './helpers/contract.js'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const pkg = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf-8'))
 
-// §S3.5 peers at the floors of §S8's carry-forward (plan D5).
-const PEERS = {
-    '@nera-static/plugin-contact-form': '^1.1.1',
-    '@nera-static/plugin-images': '^1.0.2',
-    '@nera-static/plugin-navigation': '^3.1.0',
-    '@nera-static/plugin-social-media-links': '^2.3.0',
-}
+// §S3.5 peers at the floors of §S8's carry-forward (plan D5), from the one
+// place the contract keeps them.
+const PEERS = Object.fromEntries(Object.entries(PLUGIN_CLASSES).map(([name, { range }]) => [name, range]))
 
 describe('Package', () => {
     it('npm pack lists only package.json, README.md, LICENSE and files under views/, assets/, config/', () => {
@@ -70,6 +67,12 @@ describe('Package', () => {
     })
 
     it('declares every plugin of §S3.5 as an optional peer at the decided range', () => {
+        expect(PEERS).toEqual({
+            '@nera-static/plugin-contact-form': '^1.1.1',
+            '@nera-static/plugin-images': '^1.0.2',
+            '@nera-static/plugin-navigation': '^3.1.0',
+            '@nera-static/plugin-social-media-links': '^2.3.0',
+        })
         expect(pkg.peerDependencies).toEqual(PEERS)
         expect(Object.keys(pkg.peerDependenciesMeta).sort()).toEqual(Object.keys(PEERS).sort())
         for (const meta of Object.values(pkg.peerDependenciesMeta)) {

@@ -43,7 +43,9 @@ describe('Same origin only', () => {
         })
 
         it(`${name}: every url() in the built CSS is root-absolute or a fragment`, () => {
-            for (const file of listFiles(builds[name].public, ['.css'])) {
+            const files = listFiles(builds[name].public, ['.css'])
+            expect(files.length).toBeGreaterThan(0)
+            for (const file of files) {
                 const css = fs.readFileSync(path.join(builds[name].public, file), 'utf-8').replace(/\/\*[\s\S]*?\*\//g, '')
                 for (const [, , url] of css.matchAll(/url\(\s*(['"]?)([^'")]*)\1\s*\)/g)) {
                     expect(sameOrigin(url) || url.startsWith('data:'), `${file}: ${url}`).toBe(true)
@@ -53,10 +55,16 @@ describe('Same origin only', () => {
         })
     }
 
-    // assets/ arrives with the stylesheet (Step 6); until then there is
-    // nothing to read, and the test says so rather than passing empty.
-    it.skipIf(!fs.existsSync(ASSETS))('assets/ contains no http:// or https:// outside comments, and no font files', () => {
-        for (const file of listFiles(ASSETS, ['.css', '.svg', '.json', '.webmanifest', '.txt', '.html'])) {
+    it('the theme\'s own CSS has no url(), @import or @font-face outside comments', () => {
+        const css = fs.readFileSync(path.join(ASSETS, 'css', 'theme.css'), 'utf-8').replace(/\/\*[\s\S]*?\*\//g, '')
+        expect(css).not.toMatch(/url\(/)
+        expect(css).not.toMatch(/@import|@font-face/)
+    })
+
+    it('assets/ contains no http:// or https:// outside comments, and no font files', () => {
+        const files = listFiles(ASSETS, ['.css', '.svg', '.json', '.webmanifest', '.txt', '.html'])
+        expect(files).toContain(path.join('css', 'theme.css'))
+        for (const file of files) {
             const text = fs.readFileSync(path.join(ASSETS, file), 'utf-8').replace(/\/\*[\s\S]*?\*\//g, '')
             expect(text, file).not.toMatch(/https?:\/\//)
         }

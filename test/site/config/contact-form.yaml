@@ -27,7 +27,18 @@ fields:
           - { value: order, label: Order }
           - { value: course, label: Baking course }
           - { value: other, label: Something else }
+    - name: reply_by
+      label: Reply by
+      type: radio
+      required: true
+      options:
+          - { value: email, label: Email }
+          - { value: phone, label: Phone }
     - name: message
       label: Message
       type: textarea
+      required: true
+    - name: privacy
+      label: I have read the privacy notice
+      type: checkbox
       required: true

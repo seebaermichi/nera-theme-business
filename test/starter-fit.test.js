@@ -19,7 +19,10 @@ describe('Starter fit (business)', () => {
             const form = elementByClass(page(pub, file), 'div', 'contact__form')
             expect(form).toMatch(/^\s*<form class="contact-form" novalidate data-contact-form>/)
             const fields = loadYaml(path.join(SITE, 'config', 'contact-form.yaml')).fields
-            for (const field of fields) expect(form, field.name).toContain(`id="contact-${field.name}"`)
+            for (const field of fields) {
+                const ids = field.type === 'radio' ? field.options.map((_, i) => `contact-${field.name}-${i}`) : [`contact-${field.name}`]
+                for (const id of ids) expect(form, field.name).toContain(`id="${id}"`)
+            }
             expect(form).toMatch(/<button class="contact-form__submit" type="submit">/)
         })
 
@@ -27,18 +30,36 @@ describe('Starter fit (business)', () => {
             const form = elementByClass(page(pub, file), 'div', 'contact__form')
             const ids = CONTROLS.flatMap((name) => tags(form, name)).map((attrs) => attr(attrs, 'id'))
             const labelled = new Set(tags(form, 'label').map((attrs) => attr(attrs, 'for')))
-            // name, email, topic, message and the honeypot
-            expect(ids.length).toBe(5)
+            // name, email, topic, two reply_by radios, message, privacy and the honeypot
+            expect(ids.length).toBe(8)
             for (const id of ids) {
                 expect(id).toBeTruthy()
                 expect(labelled.has(id), id).toBe(true)
             }
         })
+
+        it(`${file}: renders the checkbox and the radio group in plugin-contact-form's markup`, () => {
+            const form = elementByClass(page(pub, file), 'div', 'contact__form')
+            for (const name of [
+                'contact-form__label--checkbox',
+                'contact-form__input--checkbox',
+                'contact-form__label--radio',
+                'contact-form__input--radio',
+                'contact-form__options',
+                'contact-form__label-text',
+            ]) {
+                expect(form, name).toMatch(new RegExp(`class="[^"]*\\b${name}(?![\\w-])`))
+            }
+            const group = elementByClass(form, 'div', 'contact-form__options')
+            expect(group).toMatch(/^\s*<label class="contact-form__label contact-form__label--radio" for="contact-reply_by-0">/)
+            expect(tags(group, 'input').map((attrs) => attr(attrs, 'type'))).toEqual(['radio', 'radio'])
+            expect(form).toMatch(/<label class="contact-form__label contact-form__label--checkbox" for="contact-privacy"><input class="contact-form__input contact-form__input--checkbox" type="checkbox" id="contact-privacy"/)
+        })
     }
 
     it('translates the form on the German contact page', () => {
         const form = elementByClass(page(pub, 'de/kontakt.html'), 'div', 'contact__form')
-        for (const text of ['>Ihr Name</label>', '>Ihre E-Mail-Adresse</label>', '>Thema</label>', '>Nachricht</label>', '>Nachricht senden</button>', 'href="/de/datenschutz.html"']) {
+        for (const text of ['>Ihr Name</label>', '>Ihre E-Mail-Adresse</label>', '>Thema</label>', '<span class="contact-form__label">Antwort per</span>', '>Telefon</span></label>', '>Nachricht</label>', '>Ich habe die Datenschutzerklärung gelesen</span></label>', '>Nachricht senden</button>', 'href="/de/datenschutz.html"']) {
             expect(form).toContain(text)
         }
     })
