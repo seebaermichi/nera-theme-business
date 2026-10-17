@@ -2,6 +2,12 @@
 
 All notable changes to `@nera-static/theme-business` are documented in this file. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and the theme follows [semantic versioning](https://semver.org/) over its contract (see the README).
 
+## [1.0.1] - 2026-10-17
+
+### Fixed
+
+-   README: "Installation" and "What your site must do" name that core 4.16.0 or later also builds a themed site without a `theme/views/` folder of its own; the folder stays recommended, since it holds the vendor copies and seam overrides, and the 4.15.0 floor relies on it.
+
 ## [1.0.0] - 2026-10-17
 
 ### Added
