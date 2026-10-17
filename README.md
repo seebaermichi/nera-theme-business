@@ -24,7 +24,7 @@ In your site's `config/app.yaml`:
 theme: business
 ```
 
-The theme needs Nera's engine, `@nera-static/core`, **4.15.0 or later** (`"nera": { "generator": ">=4.15.0" }`); an older one fails the build with a message naming the range. `npm ls @nera-static/core` shows yours, `npm update @nera-static/core` brings it up. Keep a `theme/views/` folder in your site (it holds your vendor copies and seam overrides anyway; core 4.16.0 or later also builds a themed site without one, the 4.15.0 floor relies on it being there), and remove the `nera new` starter files `theme/views/layouts/layout.pug` and `theme/views/pages/default.pug` if they still carry the `nera:scaffold-default` line, or they hide the theme's files (`nera validate` warns with `theme-shadowed`).
+The theme needs **Node.js 22.12 or later** and Nera's engine, `@nera-static/core`, **4.15.0 or later** (`"nera": { "generator": ">=4.15.0" }`); an older one fails the build with a message naming the range. `npm ls @nera-static/core` shows yours, `npm update @nera-static/core` brings it up. Keep a `theme/views/` folder in your site (it holds your vendor copies and seam overrides anyway; core 4.16.0 or later also builds a themed site without one, the 4.15.0 floor relies on it being there), and remove the `nera new` starter files `theme/views/layouts/layout.pug` and `theme/views/pages/default.pug` if they still carry the `nera:scaffold-default` line, or they hide the theme's files (`nera validate` warns with `theme-shadowed`).
 
 ## Page types
 
