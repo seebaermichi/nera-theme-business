@@ -46,3 +46,9 @@ plans/
 # downscaled copies (plan D6)
 design/demo-img/
 .claude/.work-issue-active
+
+# Internal development files (plans, Snagio workflow, specs) never belong in the repo
+/.claude/
+/.mcp.json
+/ROADMAP*.md
+/DESIGN-BRIEF.md
