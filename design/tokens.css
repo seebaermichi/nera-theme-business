@@ -1,7 +1,0 @@
-/* generated from tokens.yaml */
-:root{
-  --theme-color-bg:#FBF2E3;--theme-color-surface:#F1E0C3;--theme-color-text:#3B2314;--theme-color-muted:#6E4B2E;
-  --theme-color-accent:#A1400F;--theme-color-accent-text:#FFFFFF;--theme-color-border:#DCC6A3;--theme-color-focus:#1C5F74;
-  --theme-font-body:system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;--theme-font-heading:"Fraunces", "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;--theme-font-mono:ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
-  --theme-size-base:1.0625rem;--theme-size-measure:38rem;--theme-size-width:72rem;--theme-size-radius:0.5rem;--theme-size-space:1.5rem;
-}

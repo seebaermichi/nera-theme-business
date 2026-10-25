@@ -2,6 +2,12 @@
 
 All notable changes to `@nera-static/theme-business` are documented in this file. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and the theme follows [semantic versioning](https://semver.org/) over its contract (see the README).
 
+## [1.0.3] - 2026-10-25
+
+### Fixed
+
+-   README: drop the note on `design/`, the design source, which is no longer part of the repository.
+
 ## [1.0.2] - 2026-10-17
 
 ### Fixed

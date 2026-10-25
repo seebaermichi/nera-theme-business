@@ -372,8 +372,6 @@ npx vitest run     # builds the fixture site in temporary copies and checks it
 
 To look at the fixture site: `cd test/site && npx nera build && npx nera serve`.
 
-`design/` holds the design source the stylesheet was made from (HTML, CSS and token sets); it does not reach the package.
-
 ## License
 
 MIT

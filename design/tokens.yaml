@@ -1,5 +1,0 @@
-# Nera theme "Business" — default tokens "Crust"
-tokens:
-    color: { bg: '#FBF2E3', surface: '#F1E0C3', text: '#3B2314', muted: '#6E4B2E', accent: '#A1400F', accent_text: '#FFFFFF', border: '#DCC6A3', focus: '#1C5F74' }
-    font: { body: "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif", heading: "'Fraunces', 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif", mono: "ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" }
-    size: { base: '1.0625rem', measure: '38rem', width: '72rem', radius: '0.5rem', space: '1.5rem' }
